@@ -962,6 +962,8 @@ struct ath_softc {
 	struct survey_info *cur_survey;
 	struct survey_info survey[ATH9K_NUM_CHANNELS];
 
+	struct flush_info hw_q_flush_info;
+
 	struct tasklet_struct intr_tq;
 	struct tasklet_struct bcon_tasklet;
 	struct ath_hw *sc_ah;
@@ -1044,6 +1046,7 @@ struct ath_softc {
 	atomic_t wow_sleep_proc_intr; /* in the middle of WoW sleep ? */
 	u32 wow_intr_before_sleep;
 #endif
+	u32 flush_hw_q_pending;
 };
 
 /********/

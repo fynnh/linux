@@ -617,31 +617,32 @@ static int read_file_xmit(struct seq_file *file, void *data)
 {
 	struct ath_softc *sc = file->private;
 
-	seq_printf(file, "%30s %10s%10s%10s\n\n", "BE", "BK", "VI", "VO");
+	seq_printf(file, "%38s %10s%10s%10s\n\n", "BE", "BK", "VI", "VO");
 
-	PR("MPDUs Queued:    ", queued);
-	PR("MPDUs Completed: ", completed);
-	PR("MPDUs XRetried:  ", xretries);
-	PR("Aggregates:      ", a_aggr);
-	PR("AMPDUs Queued HW:", a_queued_hw);
-	PR("AMPDUs Queued SW:", a_queued_sw);
-	PR("AMPDUs Completed:", a_completed);
-	PR("AMPDUs Retried:  ", a_retries);
-	PR("AMPDUs XRetried: ", a_xretries);
-	PR("TXERR Filtered:  ", txerr_filtered);
-	PR("FIFO Underrun:   ", fifo_underrun);
-	PR("TXOP Exceeded:   ", xtxop);
-	PR("TXTIMER Expiry:  ", timer_exp);
-	PR("DESC CFG Error:  ", desc_cfg_err);
-	PR("DATA Underrun:   ", data_underrun);
-	PR("DELIM Underrun:  ", delim_underrun);
-	PR("TX-Pkts-All:     ", tx_pkts_all);
-	PR("TX-Bytes-All:    ", tx_bytes_all);
-	PR("HW-put-tx-buf:   ", puttxbuf);
-	PR("HW-tx-start:     ", txstart);
-	PR("HW-tx-proc-desc: ", txprocdesc);
-	PR("TX-Failed:       ", txfailed);
-
+	PR("MPDUs Queued:            ", queued);
+	PR("MPDUs Completed:         ", completed);
+	PR("MPDUs XRetried:          ", xretries);
+	PR("Aggregates:              ", a_aggr);
+	PR("AMPDUs Queued HW:        ", a_queued_hw);
+	PR("AMPDUs Queued SW:        ", a_queued_sw);
+	PR("AMPDUs Completed:        ", a_completed);
+	PR("AMPDUs Retried:          ", a_retries);
+	PR("AMPDUs XRetried:         ", a_xretries);
+	PR("TXERR Filtered:          ", txerr_filtered);
+	PR("FIFO Underrun:           ", fifo_underrun);
+	PR("TXOP Exceeded:           ", xtxop);
+	PR("TXTIMER Expiry:          ", timer_exp);
+	PR("DESC CFG Error:          ", desc_cfg_err);
+	PR("DATA Underrun:           ", data_underrun);
+	PR("DELIM Underrun:          ", delim_underrun);
+	PR("TX-Pkts-All:             ", tx_pkts_all);
+	PR("TX-Bytes-All:            ", tx_bytes_all);
+	PR("HW-put-tx-buf:           ", puttxbuf);
+	PR("HW-tx-start:             ", txstart);
+	PR("HW-tx-proc-desc:         ", txprocdesc);
+	PR("TX-Failed:               ", txfailed);
+	PR("HW-flush-required:       ", hw_flush_required);
+	PR("HW-flush-not-required:   ", hw_flush_not_required);
 	return 0;
 }
 
@@ -1325,5 +1326,7 @@ int ath9k_init_debug(struct ath_hw *ah)
 			    sc, &fops_ackto);
 #endif
 
+	debugfs_create_u32("flush_hw_q_pending", S_IRUGO | S_IWUGO,
+				sc->debug.debugfs_phy, &sc->flush_hw_q_pending);
 	return 0;
 }

@@ -612,6 +612,15 @@ static inline int rdev_dump_survey(struct cfg80211_registered_device *rdev,
 	return ret;
 }
 
+static inline int rdev_dump_flush_stats(struct cfg80211_registered_device *rdev,
+		   struct net_device *netdev, int idx,
+		   struct flush_info *info)
+{
+	int ret;
+	ret = rdev->ops->dump_flush_stats(&rdev->wiphy, netdev, idx, info);
+	return ret;
+}
+
 static inline int rdev_set_pmksa(struct cfg80211_registered_device *rdev,
 				 struct net_device *netdev,
 				 struct cfg80211_pmksa *pmksa)

@@ -1927,6 +1927,29 @@ static int ath9k_get_survey(struct ieee80211_hw *hw, int idx,
 	return 0;
 }
 
+static int ath9k_get_flush_stats(struct ieee80211_hw *hw, int idx,
+		struct flush_info *survey)
+{
+	printk(KERN_ALERT "%s:%d\n", __FILE__, __LINE__);
+	struct ath_softc *sc = hw->priv;
+
+	if (config_enabled(CONFIG_ATH9K_TX99))
+		return -EOPNOTSUPP;
+	survey->be_flush_req = sc->debug.stats.txstats[ATH_TXQ_AC_BE].hw_flush_required;
+	survey->be_flush_not_req = sc->debug.stats.txstats[ATH_TXQ_AC_BE].hw_flush_not_required;
+
+	survey->bk_flush_req = sc->debug.stats.txstats[ATH_TXQ_AC_BK].hw_flush_required;
+	survey->bk_flush_not_req = sc->debug.stats.txstats[ATH_TXQ_AC_BK].hw_flush_not_required;
+
+	survey->vi_flush_req = sc->debug.stats.txstats[ATH_TXQ_AC_VI].hw_flush_required;
+	survey->vi_flush_not_req = sc->debug.stats.txstats[ATH_TXQ_AC_VI].hw_flush_not_required;
+
+	survey->vo_flush_req = sc->debug.stats.txstats[ATH_TXQ_AC_VO].hw_flush_required;
+	survey->vo_flush_not_req = sc->debug.stats.txstats[ATH_TXQ_AC_VO].hw_flush_not_required;
+
+	return 0;
+}
+
 static void ath9k_enable_dynack(struct ath_softc *sc)
 {
 #ifdef CONFIG_ATH9K_DYNACK
@@ -2611,6 +2634,7 @@ struct ieee80211_ops ath9k_ops = {
 	.reset_tsf 	    = ath9k_reset_tsf,
 	.ampdu_action       = ath9k_ampdu_action,
 	.get_survey	    = ath9k_get_survey,
+	.get_flush_stats = ath9k_get_flush_stats,
 	.rfkill_poll        = ath9k_rfkill_poll_state,
 	.set_coverage_class = ath9k_set_coverage_class,
 	.flush		    = ath9k_flush,

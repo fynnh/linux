@@ -763,6 +763,15 @@ static inline int drv_get_survey(struct ieee80211_local *local, int idx,
 	return ret;
 }
 
+static inline int drv_get_flush_stats(struct ieee80211_local *local, int idx,
+		struct flush_info *survey)
+{
+	int ret = -EOPNOTSUPP;
+	if (local->ops->get_flush_stats)
+		ret = local->ops->get_flush_stats(&local->hw, idx, survey);
+	return ret;
+}
+
 static inline void drv_rfkill_poll(struct ieee80211_local *local)
 {
 	might_sleep();

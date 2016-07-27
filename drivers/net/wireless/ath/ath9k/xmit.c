@@ -1985,6 +1985,17 @@ static void ath_tx_txqaddbuf(struct ath_softc *sc, struct ath_txq *txq,
 	if (list_empty(head))
 		return;
 
+	if (sc->flush_hw_q_pending) {
+		if (ath9k_hw_numtxpending(ah, txq->axq_qnum)) {
+			// printk(KERN_ALERT "flush and pending!");
+			TX_STAT_INC(txq->axq_qnum, hw_flush_required);
+
+		} else {
+			// printk(KERN_ALERT "flush but nothing pending in queues!");
+			TX_STAT_INC(txq->axq_qnum, hw_flush_not_required);
+		}
+	}
+
 	edma = !!(ah->caps.hw_caps & ATH9K_HW_CAP_EDMA);
 	bf = list_first_entry(head, struct ath_buf, list);
 	bf_last = list_entry(head->prev, struct ath_buf, list);
@@ -2802,6 +2813,7 @@ int ath_tx_init(struct ath_softc *sc, int nbufs)
 
 	if (sc->sc_ah->caps.hw_caps & ATH9K_HW_CAP_EDMA)
 		error = ath_tx_edma_init(sc);
+	sc->flush_hw_q_pending = 0;
 
 	return error;
 }

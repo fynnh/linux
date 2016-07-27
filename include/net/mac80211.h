@@ -3077,6 +3077,8 @@ struct ieee80211_ops {
 			    u8 buf_size);
 	int (*get_survey)(struct ieee80211_hw *hw, int idx,
 		struct survey_info *survey);
+	int (*get_flush_stats)(struct ieee80211_hw *hw, int idx,
+			struct flush_info *survey);
 	void (*rfkill_poll)(struct ieee80211_hw *hw);
 	void (*set_coverage_class)(struct ieee80211_hw *hw, s16 coverage_class);
 #ifdef CONFIG_NL80211_TESTMODE

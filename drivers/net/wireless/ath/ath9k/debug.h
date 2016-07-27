@@ -163,6 +163,8 @@ struct ath_interrupt_stats {
  * @txstart:  Number of times hardware was told to start tx.
  * @txprocdesc:  Number of times tx descriptor was processed
  * @txfailed:  Out-of-memory or other errors in xmit path.
+ * @hw_flush_required: Number of times the hardware queue needs to be flushed.
+ * @hw_flush_not_required: Number of times the hardware queue was found empty before pushing new packets to it.
  */
 struct ath_tx_stats {
 	u32 tx_pkts_all;
@@ -187,6 +189,8 @@ struct ath_tx_stats {
 	u32 txstart;
 	u32 txprocdesc;
 	u32 txfailed;
+	u32 hw_flush_required;
+	u32 hw_flush_not_required;
 };
 
 /*

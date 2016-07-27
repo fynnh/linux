@@ -501,6 +501,14 @@ static int ieee80211_dump_survey(struct wiphy *wiphy, struct net_device *dev,
 	return drv_get_survey(local, idx, survey);
 }
 
+static int ieee80211_dump_flush_stats(struct wiphy *wiphy, struct net_device *dev,
+		 int idx, struct flush_info *survey)
+{
+	struct ieee80211_local *local = wdev_priv(dev->ieee80211_ptr);
+
+	return drv_get_flush_stats(local, idx, survey);
+}
+
 static int ieee80211_get_station(struct wiphy *wiphy, struct net_device *dev,
 				 const u8 *mac, struct station_info *sinfo)
 {
@@ -3702,6 +3710,7 @@ const struct cfg80211_ops mac80211_config_ops = {
 	.get_station = ieee80211_get_station,
 	.dump_station = ieee80211_dump_station,
 	.dump_survey = ieee80211_dump_survey,
+	.dump_flush_stats = ieee80211_dump_flush_stats,
 #ifdef CONFIG_MAC80211_MESH
 	.add_mpath = ieee80211_add_mpath,
 	.del_mpath = ieee80211_del_mpath,

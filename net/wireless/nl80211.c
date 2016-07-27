@@ -6596,6 +6596,91 @@ static int nl80211_dump_survey(struct sk_buff *skb,
 	return res;
 }
 
+static int nl80211_send_flush_stats(struct sk_buff *msg, u32 portid, u32 seq,
+		int flags, struct net_device *dev,
+		struct flush_info *survey)
+{
+	void *hdr;
+	struct nlattr *infoattr;
+
+	hdr = nl80211hdr_put(msg, portid, seq, flags,
+			NL80211_CMD_NEW_FLUSH_STATS);
+	if (!hdr)
+		return -ENOMEM;
+
+	if (nla_put_u32(msg, NL80211_ATTR_IFINDEX, dev->ifindex))
+		goto nla_put_failure;
+
+	infoattr = nla_nest_start(msg, NL80211_ATTR_FLUSH_INFO);
+	if (!infoattr)
+		goto nla_put_failure;
+
+	if (nla_put_u32(msg, NL80211_FLUSH_REQ_BE, survey->be_flush_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_NOT_REQ_BE, survey->be_flush_not_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_REQ_BK, survey->bk_flush_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_NOT_REQ_BK, survey->bk_flush_not_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_REQ_VI, survey->vi_flush_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_NOT_REQ_VI, survey->vi_flush_not_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_REQ_VO, survey->vo_flush_req))
+		goto nla_put_failure;
+	if (nla_put_u32(msg, NL80211_FLUSH_NOT_REQ_VO, survey->vo_flush_not_req))
+		goto nla_put_failure;
+
+	nla_nest_end(msg, infoattr);
+
+	return genlmsg_end(msg, hdr);
+
+
+ nla_put_failure:
+	genlmsg_cancel(msg, hdr);
+	return -EMSGSIZE;
+
+}
+
+static int nl80211_dump_flush_stats(struct sk_buff *skb,
+		struct netlink_callback *cb)
+{
+	struct flush_info survey;
+	struct cfg80211_registered_device *rdev;
+	struct wireless_dev *wdev;
+	int survey_idx = cb->args[2];
+	int res;
+
+	// printk(KERN_ALERT "%s:%d\n", __FILE__, __LINE__);
+	res = nl80211_prepare_wdev_dump(skb, cb, &rdev, &wdev);
+	if (res)
+		return res;
+
+
+	if (!rdev->ops->dump_flush_stats) {
+		res = -EOPNOTSUPP;
+		printk(KERN_ALERT "Operation not supported: %s:%d\n", __FILE__, __LINE__);
+		goto out_err;
+	}
+
+	res = rdev_dump_flush_stats(rdev, wdev->netdev, survey_idx, &survey);
+
+	if (nl80211_send_flush_stats(skb,
+			NETLINK_CB(cb->skb).portid,
+			cb->nlh->nlmsg_seq, NLM_F_MULTI,
+			wdev->netdev, &survey)) {
+		goto out;
+	}
+ out:
+	cb->args[2] = survey_idx; // <- needed ????
+    res = skb->len;
+ out_err:
+	nl80211_finish_wdev_dump(rdev);
+	printk(KERN_ALERT "returning %s:%d", __FILE__, __LINE__);
+	return 0;
+}
+
 static bool nl80211_valid_wpa_versions(u32 wpa_versions)
 {
 	return !(wpa_versions & ~(NL80211_WPA_VERSION_1 |
@@ -10735,6 +10820,11 @@ static const struct genl_ops nl80211_ops[] = {
 		.flags = GENL_ADMIN_PERM,
 		.internal_flags = NL80211_FLAG_NEED_NETDEV_UP |
 				  NL80211_FLAG_NEED_RTNL,
+	},
+	{
+		.cmd = NL80211_CMD_FLUSH_STATS,
+		.policy = nl80211_policy,
+		.dumpit = nl80211_dump_flush_stats
 	},
 };
 

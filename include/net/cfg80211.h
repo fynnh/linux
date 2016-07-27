@@ -569,6 +569,30 @@ struct survey_info {
 };
 
 /**
+ * struct flush_info - stats for flushing pending packets in hardware queues
+ *
+ * @be_flush_req: number of times when there was need to flush a pending packet for AC_BE
+ * @be_flush_not_req: number of times when there was no pending packet in AC_BE
+ * @bk_flush_req: number of times when there was need to flush a pending packet for AC_BK
+ * @bk_flush_not_req: number of times when there was no pending packet in AC_BK
+ * @vi_flush_req: number of times when there was need to flush a pending packet for AC_VI
+ * @vi_flush_not_req: number of times when there was no pending packet in AC_VI
+ * @vo_flush_req: number of times when there was need to flush a pending packet for AC_VO
+ * @vo_flush_not_req: number of times when there was no pending packet in AC_VO
+ */
+struct flush_info {
+	u32 be_flush_req;
+	u32 be_flush_not_req;
+	u32 bk_flush_req;
+	u32 bk_flush_not_req;
+	u32 vi_flush_req;
+	u32 vi_flush_not_req;
+	u32 vo_flush_req;
+	u32 vo_flush_not_req;
+};
+
+
+/**
  * struct cfg80211_crypto_settings - Crypto settings
  * @wpa_versions: indicates which, if any, WPA versions are enabled
  *	(from enum nl80211_wpa_versions)
@@ -2580,6 +2604,9 @@ struct cfg80211_ops {
 
 	int	(*dump_survey)(struct wiphy *wiphy, struct net_device *netdev,
 			int idx, struct survey_info *info);
+
+	int (*dump_flush_stats)(struct wiphy *wiphy, struct net_device *netdev,
+			int idx, struct flush_info *info);
 
 	int	(*set_pmksa)(struct wiphy *wiphy, struct net_device *netdev,
 			     struct cfg80211_pmksa *pmksa);
