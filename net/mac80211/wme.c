@@ -214,9 +214,10 @@ u16 ieee80211_select_queue(struct ieee80211_sub_if_data *sdata,
 
 	/* use the data classifier to determine what 802.1d tag the
 	 * data frame has */
-	qos_map = rcu_dereference(sdata->qos_map);
-	skb->priority = cfg80211_classify8021d(skb, qos_map ?
-					       &qos_map->qos_map : NULL);
+// Quick workaround to enable queueing in different AC (BE, BK, VO, VI)
+//	qos_map = rcu_dereference(sdata->qos_map);
+//	skb->priority = cfg80211_classify8021d(skb, qos_map ?
+//					       &qos_map->qos_map : NULL);
 
  downgrade:
 	ret = ieee80211_downgrade_queue(sdata, sta, skb);
