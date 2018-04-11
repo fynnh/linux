@@ -1,7 +1,4 @@
-def ubuntu = docker.build("trusty64", "./configs/ubuntu/trusty/amd64/Dockerfile")
-
-
-stage("Ubuntu 64") {
+stage("Ubuntu 64 Bit") {
     node {
 		checkout scm
 		def trusty64 = docker.build("trusty64", "./configs/ubuntu/trusty/amd64/Dockerfile")
