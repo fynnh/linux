@@ -11,3 +11,7 @@ RUN apt-get update && apt-get install -y \
   ccache \
   libelf-dev \
   bc
+
+RUN useradd -ms /bin/bash jenkins
+USER jenkins
+WORKDIR /home/jenkins
