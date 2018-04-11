@@ -8,4 +8,5 @@ RUN apt-get update && apt-get install -y \
   fakeroot \
   libncurses5-dev \
   libssl-dev \
-  ccache
+  ccache \
+  libelf-dev
