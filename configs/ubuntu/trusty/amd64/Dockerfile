@@ -9,4 +9,5 @@ RUN apt-get update && apt-get install -y \
   libncurses5-dev \
   libssl-dev \
   ccache \
-  libelf-dev
+  libelf-dev \
+  bc
