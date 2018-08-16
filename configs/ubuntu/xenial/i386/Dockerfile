@@ -1,6 +1,6 @@
-FROM amd64/ubuntu:14.04
+FROM i386/ubuntu:16.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   build-essential \
   bison \
   flex \
