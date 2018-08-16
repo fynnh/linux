@@ -1,6 +1,6 @@
 FROM amd64/ubuntu:18.04
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   build-essential \
   bison \
   flex \
