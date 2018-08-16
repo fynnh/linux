@@ -6,6 +6,7 @@ stage("Ubuntu 64 Bit") {
 		def xenial64 = docker.build("xenial64", "./build/configs/ubuntu/xenial/amd64")
 		def xenial32 = docker.build("xenial32", "./build/configs/ubuntu/xenial/i386")
 		xenial64.inside {
+		    sh "rm *.deb"
 			sh "cd build && cp configs/ubuntu/xenial/amd64/amd64-config.flavour.generic .config"
 			sh "cd build && yes '' | make oldconfig"
 			sh "cd build && make clean"
@@ -23,6 +24,7 @@ stage("Ubuntu 64 Bit") {
 			}
 		}
 		xenial32.inside {
+		    sh "rm *.deb"
 			sh "cd build && cp configs/ubuntu/xenial/i386/i386-config.flavour.generic .config"
 			sh "cd build && yes '' | make oldconfig"
 			sh "cd build && make clean"
